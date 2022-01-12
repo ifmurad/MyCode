@@ -10,7 +10,12 @@ class Main {
         System.out.println(calc(inputString));
     }
     public static String calc(String inputString) {
-        String exception = "Исключение";
+
+        String exception1 = "Исключение. Введённые числа принадлежат разным системам счисления. Приложение работает только с арабскими или римскими числами одновременно";
+        String exception2 = "Исключение. Введённое выражение не соответствует арифметическим операциям с двумя целыми числами: a + b, a - b, a * b, a / b";
+        String exception3 = "Исключение. Введённые числа должны находиться в диапазоне от I до X включительно";
+        String exception4 = "Исключение. Результатом арифметической операции с римскими числами могут быть только положительные числа";
+        String exception5 = "Исключение. Введённые числа должны находиться в диапазоне от 1 до 10 включительно";
         String inputString1;
         if (inputString.contains("+")) {
             inputString1 = inputString.replace("+", " + ");
@@ -25,12 +30,12 @@ class Main {
             inputString1 = inputString.replace("/", " / ");
         }
         else {
-            return exception;
+            return exception2;
         }
         String[] symbols = inputString1.split("\\s*(\\s)");
         int count = (int) Arrays.stream(symbols).count();
         if (count != 3) {
-            return exception;
+            return exception2;
         }
         else {
             Convertion convertion = new Convertion();
@@ -40,14 +45,14 @@ class Main {
                 int num1 = Integer.parseInt(symbols[0]);
                 int num2 = Integer.parseInt(symbols[2]);
                 if ((num1 < 1 || num1 > 10) || (num2 < 1 || num2 > 10)) {
-                    return exception;
+                    return exception3;
                 }
                 else {
                     Arithmetic arithmetic = new Arithmetic();
                     String result = arithmetic.getResult(num1, symbols[1], num2);
-                    if (!result.equals(exception)) {
+                    if (!result.equals(exception2)) {
                         if ( Integer.parseInt(result) < 1) {
-                            return exception;
+                            return exception4;
                         }
                         else {
                             int resultInt = Integer.parseInt(result);
@@ -55,19 +60,19 @@ class Main {
                         }
                     }
                     else {
-                        return exception;
+                        return exception2;
                     }
                 }
             }
             else if (convertion.IsRoman(symbols[0]) || convertion.IsRoman(symbols[2])) {
-                return exception;
+                return exception1;
             }
             else {
                 try {
                     int num1 = Integer.parseInt(symbols[0]);
                     int num2 = Integer.parseInt(symbols[2]);
                     if ((num1 < 1 || num1 > 10) || (num2 < 1 || num2 > 10)) {
-                        return exception;
+                        return exception5;
                     }
                     else {
                         Arithmetic arithmetic = new Arithmetic();
@@ -75,7 +80,7 @@ class Main {
                     }
                 }
                 catch (Exception ex) {
-                    return exception;
+                    return exception2;
                 }
             }
         }
@@ -86,7 +91,7 @@ class Convertion {
     String RomanToArab(String RomanNum) {
         Convertion convertion = new Convertion();
         String ArabNum;
-        for (int i = 1; i <= 10; ++i) {
+        for (int i = 1; i <= 100; ++i) {
             if (convertion.ArabToRoman(i).equals(RomanNum)) {
                 ArabNum = String.valueOf(i);
                 return ArabNum;
@@ -96,7 +101,7 @@ class Convertion {
     }
     boolean IsRoman(String RomanNum) {
         Convertion convertion = new Convertion();
-        for (int i = 1; i <= 10; ++i) {
+        for (int i = 1; i <= 100; ++i) {
             if (convertion.ArabToRoman(i).equals(RomanNum)) {
                 return true;
             }
@@ -153,8 +158,14 @@ class Convertion {
         else if (ArabNum == 90) {
             resultStr = "XC";
         }
-        else {
+        else if ((ArabNum >= 91) && (ArabNum <= 99)) {
+            resultStr = "XC" + RomanNum.get(ArabNum % 10);
+        }
+        else if (ArabNum == 100) {
             resultStr = "C";
+        }
+        else {
+            resultStr = "Приложение конвертирует числа до 100";
         }
         return resultStr;
     }
@@ -177,7 +188,7 @@ class Arithmetic {
                 result = String.valueOf(num1 / num2);
                 break;
             default:
-                result = "Исключение";
+                result = "Исключение. Введённое выражение не соответствует арифметическим операциям с двумя целыми числами: a + b, a - b, a * b, a / b";
                 break;
         }
         return result;
